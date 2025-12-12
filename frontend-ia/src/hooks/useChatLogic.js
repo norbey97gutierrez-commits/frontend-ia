@@ -5,12 +5,14 @@ const API_URL = 'http://localhost:8000/v1/generate';
 
 export const useChatLogic = () => {
   const [prompt, setPrompt] = useState('');
+  // La conversación ahora almacenará objetos de código
   const [conversacion, setConversacion] = useState([]);
   const [cargando, setCargando] = useState(false);
 
   const chatEndRef = useRef(null);
 
   const scrollToBottom = useCallback(() => {
+    // Asegura que el scroll se realice solo si estamos en modo chat (con muchos mensajes)
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
@@ -18,6 +20,7 @@ export const useChatLogic = () => {
     scrollToBottom();
   }, [conversacion, scrollToBottom]);
 
+  // Función para manejar el envío de la consulta
   const manejarEnvio = async (e) => {
     e.preventDefault();
     const preguntaUsuario = prompt.trim();
@@ -27,46 +30,52 @@ export const useChatLogic = () => {
     setCargando(true);
     setPrompt('');
 
-    // 1. Agregamos el mensaje del usuario al historial
+    // 1. Agregar el mensaje del usuario
     setConversacion(prev => [...prev, { texto: preguntaUsuario, tipo: 'usuario' }]);
 
-    // 2. Mensaje temporal con ID único para ser reemplazado luego
+    // 2. Mensaje temporal de carga
     const ID_CARGA = 'cargando-' + Date.now();
     setConversacion(prev => [...prev, { 
-      texto: 'Analizando perfil técnico...', 
+      texto: 'Generando solución de software...', // Nuevo mensaje de carga
       tipo: 'ia', 
       id: ID_CARGA,
       estaCargando: true 
     }]);
 
     try {
+      // Solicitud POST al backend
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: preguntaUsuario }),
+        body: JSON.stringify({ prompt: preguntaUsuario }), 
       });
 
-      const data = await response.json();
+      // 'data' ahora es directamente el objeto SoftwareSolution JSON
+      const data = await response.json(); 
 
       if (!response.ok) {
-        // Capturamos el error estructurado de FastAPI (raise HTTPException)
-        throw new Error(data.detail || `Error ${response.status}`);
+        // Manejo de errores HTTP (400, 422, 500). El error 422 vendrá aquí si persiste.
+        throw new Error(data.detail || `Error ${response.status}: Falló la comunicación con el servidor.`);
       }
 
       /**
-       * 3. PARSEO DEL CONTENIDO ESTRUCTURADO
-       * Tu backend envía 'respuesta_generada' como string debido a json.dumps()
+       * ✅ CORRECCIÓN CLAVE: Eliminamos el JSON.parse() doble.
+       * 'data' ya contiene el objeto SoftwareSolution completo enviado por FastAPI.
        */
-      const analisisRaw = JSON.parse(data.respuesta_generada);
+      const solucionRaw = data; 
 
+      // Creamos el objeto de respuesta de la IA con la nueva estructura
       const respuestaIA = {
         tipo: 'ia',
         esEstructurado: true,
-        // Aseguramos que los campos coincidan con tu SoftwareDevAnalysis de Pydantic
-        analisis: {
-          rol: analisisRaw.rol_sugerido,
-          habilidades: analisisRaw.habilidades_clave,
-          justificacion: analisisRaw.justificacion_rol
+        solucion: {
+          nombre: solucionRaw.proyecto_nombre,
+          lenguaje: solucionRaw.lenguaje,
+          framework: solucionRaw.framework,
+          codigo: solucionRaw.codigo_principal,
+          explicacion: solucionRaw.explicacion_tecnica,
+          dependencias: solucionRaw.dependencias || [], // Usar array vacío si no existe
+          archivos: solucionRaw.estructura_archivos || [],
         }
       };
 
@@ -81,15 +90,22 @@ export const useChatLogic = () => {
       const mensajeError = {
         tipo: 'ia',
         esEstructurado: false,
-        texto: `⚠️ ${error.message}`
+        texto: `⚠️ Error: ${error.message}`
       };
 
+      // Reemplaza el mensaje de carga con el error
       setConversacion(prev =>
         prev.map(msg => (msg.id === ID_CARGA ? mensajeError : msg))
       );
     } finally {
       setCargando(false);
     }
+  };
+
+  // Función para manejar las sugerencias (opcional, pero útil para la UI de Gemini)
+  const seleccionarSugerencia = (sugerenciaTexto) => {
+    // Al seleccionar una sugerencia (chip), lo establece como el prompt 
+    setPrompt(sugerenciaTexto);
   };
 
   return {
@@ -99,5 +115,6 @@ export const useChatLogic = () => {
     cargando,
     chatEndRef,
     manejarEnvio,
+    seleccionarSugerencia, 
   };
 };

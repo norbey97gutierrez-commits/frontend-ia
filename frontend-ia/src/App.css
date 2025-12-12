@@ -1,249 +1,353 @@
-/*
-====================================
-1. VARIABLES CSS (PALETA DE COLORES)
+/* ====================================
+1. VARIABLES Y CONFIGURACIÓN BASE 
 ====================================
 */
 :root {
-    /* Colores del Fondo / Base */
-    --color-fondo-base: #1a1a1a;
-    --color-fondo-input: #2c2c2c;
-    --color-fondo-mensaje-ia: #2c2c2c;
-    --color-fondo-mensaje-usuario: #1e3a52; 
-    
-    /* Colores de Tipografía */
-    --color-texto-principal: #e0e0e0;
-    --color-texto-secundario: #999;
-    --color-separador-linea: #3d3d3d;
-    
-    /* Colores de Marca (Acentos) */
-    --color-marca-ia: #4db8ff; 
-    --color-marca-send-button: #1e88e5;
-    --color-marca-welcome: #ff4db8; 
-    
-    /* Sombras */
-    --sombra-fuerte: 0 4px 15px rgba(0, 0, 0, 0.5);
+    --color-fondo-base: #131314;
+    /* Color oscuro de Gemini */
+    --color-fondo-input: #1e1f20;
+    --color-borde-input: #3c4043;
+    --color-texto-principal: #e3e3e3;
+    --color-texto-secundario: #b4b4b4;
+    --color-marca-ia: #4db8ff;
+    --color-user-bubble: #2b2d31;
+    --fuente-google: 'Google Sans', 'Inter', system-ui, sans-serif;
+
+    /* Nuevas variables para el bloque de código */
+    --color-fondo-codigo: #1f1f1f;
+    --color-borde-codigo: #3c4043;
 }
 
-/*
-====================================
-2. ESTILOS GLOBALES Y LAYOUT DE CHAT
-====================================
-*/
-
-/* Configuración del cuerpo y HTML */
-html, body, #root {
+html,
+body,
+#root {
     height: 100%;
     margin: 0;
     padding: 0;
-}
-
-body {
-    background-color: var(--color-fondo-base); 
-    color: var(--color-texto-principal); 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    overflow-y: auto; 
-    overflow-x: hidden;
-}
-
-.chat-layout {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; 
-    max-width: 1000px;
-    margin: 0 auto;
-    position: relative; 
-    padding-bottom: 120px; 
-}
-
-/* Área de la Conversación */
-.conversacion-container {
-    flex-grow: 1; 
-    padding: 20px; 
-    padding-bottom: 0; 
-    overflow-x: hidden;
+    background-color: var(--color-fondo-base);
+    color: var(--color-texto-principal);
+    font-family: var(--fuente-google);
+    overflow: hidden;
 }
 
 /* ====================================
-3. COMPONENTE (Bienvenida)
+2. LAYOUT MAESTRO (CENTRADO DESDE LA RAÍZ)
 ====================================
 */
-
-.welcome-screen {
-    position: fixed; 
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    max-width: 600px;
-    width: 90%; 
-    text-align: center; 
-    z-index: 1; 
-    margin-top: -100px;
-}
-
-.welcome-screen__title {
-    font-size: 2.2rem;
-    color: var(--color-texto-principal);
-    margin-bottom: 10px;
-    display: block; 
-    text-align: center;
-}
-
-.welcome-screen__title span {
-    color: var(--color-marca-welcome); 
-    font-size: 1.2em;
-    display: block; 
-    margin-bottom: 10px;
-}
-
-.welcome-screen__title h2 {
-    font-size: 2.5rem; 
-    margin: 0;
-}
-
-.welcome-screen__description {
-    color: var(--color-texto-secundario);
-    text-align: center; 
-    margin: 10px auto 0 auto; 
-}
-
-
-/*
-====================================
-4. COMPONENTE MENSAJE
-====================================
-*/
-
-.mensaje { 
+.chat-layout {
     display: flex;
-    align-items: flex-start;
-    padding: 15px 0; 
-    margin-bottom: 10px;
-    gap: 15px;
-}
-
-.mensaje__avatar {
-    font-size: 1.5rem;
-    padding-top: 5px;
-    flex-shrink: 0; 
-}
-
-.mensaje__contenido {
-    background-color: var(--color-fondo-mensaje-ia); 
-    padding: 15px;
-    border-radius: 12px;
-    max-width: 90%;
-    flex-grow: 1;
-}
-
-/* Modificadores */
-.mensaje--usuario { 
-    justify-content: flex-end;
-}
-
-.mensaje--usuario .mensaje__contenido {
-    background-color: var(--color-fondo-mensaje-usuario); 
-    color: #f0f0f0;
-}
-
-.mensaje__header-ia h2 {
-    color: var(--color-marca-ia);
-    font-size: 1.1rem;
-    margin-top: 0;
-    margin-bottom: 5px;
-    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
     align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid var(--color-separador-linea);
-    padding-bottom: 5px;
+    /* CENTRADO HORIZONTAL DE TODOS LOS HIJOS */
+    position: relative;
+    box-sizing: border-box;
+
+    /* ✅ CAMBIO AQUÍ: El scroll ahora está en la orilla derecha del navegador */
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #3c4043 transparent;
 }
 
-.mensaje__texto { 
-    white-space: pre-wrap;
-    text-align: left;
-    line-height: 1.6;
-    color: var(--color-texto-principal);
-    margin: 0;
+/* Estado de Bienvenida: Centrado vertical total */
+.layout--welcome {
+    justify-content: center;
 }
 
-/*
-====================================
-5. COMPONENTE CHAT INPUT
+/* ====================================
+3. CARRIL DE CONVERSACIÓN
 ====================================
 */
+.conversacion-container {
+    width: 100%;
+    max-width: 850px;
+    /* Ancho máximo de lectura tipo Gemini */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    padding-bottom: 200px;
 
-.input-wrapper {
-    position: fixed; 
-    bottom: 40px;
-    left: 0;
-    right: 0;
+    /* ✅ CAMBIO AQUÍ: Eliminamos el scroll de aquí para que no salga en medio */
+    overflow: visible;
+    box-sizing: border-box;
+}
+
+/* ====================================
+4. COMPONENTE BIENVENIDA (CENTRADO)
+====================================
+*/
+.welcome-screen {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; 
-    background-color: var(--color-fondo-base); 
-    padding: 10px 0;
-    z-index: 50; 
+    align-items: center;
+    text-align: center;
+    animation: fadeIn 0.8s ease-out;
 }
 
-.input-form { 
+.welcome-screen__title h2 {
+    font-size: 3.2rem;
+    font-weight: 500;
+    margin: 0 0 10px 0;
+    background: linear-gradient(to right, #4285f4, #d96570, #9b72cb);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.welcome-screen__description {
+    font-size: 1.1rem;
+    color: var(--color-texto-secundario);
+    max-width: 600px;
+    margin-bottom: 30px;
+}
+
+.suggestions-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.suggestions-list li {
+    width: 100%;
+    max-width: 550px;
+    background-color: var(--color-fondo-input);
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid var(--color-borde-input);
+    color: var(--color-texto-principal);
+    cursor: default;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.suggestions-list li:hover {
+    background-color: #28292a;
+    transform: translateY(-2px);
+}
+
+/* ====================================
+5. MENSAJES (ESTILO LIMPIO SIN TARJETAS)
+====================================
+*/
+.mensaje {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+    animation: fadeIn 0.4s ease;
+}
+
+.mensaje--usuario {
+    align-items: flex-end;
+}
+
+.mensaje--usuario .mensaje__contenido {
+    background-color: var(--color-user-bubble);
+    padding: 12px 24px;
+    border-radius: 22px;
+    max-width: 80%;
+    font-size: 1rem;
+}
+
+.mensaje--ia {
+    align-items: flex-start;
+}
+
+.mensaje--ia .mensaje__contenido {
+    background: transparent;
+    padding: 0;
+    width: 100%;
+    box-shadow: none;
+}
+
+/* CLASES DE LA ANTIGUA IA (Para compatibilidad si las usas en otros sitios) */
+.analisis-ia {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.analisis-ia__rol {
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--color-texto-principal);
+}
+
+/* ====================================
+5.1. ESTILOS DE SOLUCIÓN DE CÓDIGO (NUEVA IA)
+====================================
+*/
+.solucion-ia {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    /* Más espacio entre secciones */
+    padding-top: 10px;
+}
+
+.solucion-ia__header {
+    margin-bottom: 10px;
+}
+
+.solucion-ia__titulo-proyecto {
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--color-texto-principal);
+    line-height: 1.3;
+}
+
+.solucion-ia__subtitulo {
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--color-texto-principal);
+}
+
+.solucion-ia__explicacion p {
+    margin: 0 0 1em 0;
+    line-height: 1.6;
+}
+
+/* Estilos para el Markdown (ej. listas) */
+.solucion-ia__explicacion ul {
+    padding-left: 20px;
+}
+
+/* Contenedor del código para que no se desborde */
+.solucion-ia__codigo-wrapper {
+    overflow-x: auto;
+    /* Permite scroll horizontal si el código es muy largo */
+    border-radius: 8px;
+}
+
+/* Sobrescribe los estilos por defecto del SyntaxHighlighter (si es necesario) */
+.solucion-ia__codigo-wrapper pre {
+    margin: 0 !important;
+    border: 1px solid var(--color-borde-codigo) !important;
+    background-color: var(--color-fondo-codigo) !important;
+}
+
+/* Estilos de los badges (habilidades/dependencias) */
+.badge-skill {
+    display: inline-block;
+    border: 1px solid var(--color-borde-input);
+    padding: 6px 14px;
+    border-radius: 8px;
+    margin: 4px;
+    font-size: 0.85rem;
+    color: var(--color-marca-ia);
+    background-color: rgba(77, 184, 255, 0.05);
+}
+
+/* ====================================
+6. INPUT CHAT (FLOTANTE Y CENTRADO)
+====================================
+*/
+.input-wrapper {
+    position: fixed;
+    bottom: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 850px;
+    z-index: 100;
+}
+
+.input-form {
+    background-color: var(--color-fondo-input);
+    border-radius: 32px;
+    padding: 8px 12px 8px 24px;
     display: flex;
     align-items: center;
-    width: 90%; 
-    max-width: 800px; 
-    margin: 0 auto; 
-    
-    background-color: var(--color-fondo-input);
-    border-radius: 25px;
-    box-shadow: var(--sombra-fuerte);
-    border: 1px solid var(--color-marca-ia);
+    border: 1px solid var(--color-borde-input);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: border-color 0.3s;
+}
+
+.input-form:focus-within {
+    border-color: #5f6368;
 }
 
 .input-form textarea {
-    flex-grow: 1;
-    min-height: 20px;
-    max-height: 200px;
-    padding: 15px 20px;
+    flex: 1;
+    background: transparent;
     border: none;
-    border-radius: 25px 0 0 25px;
-    font-size: 1rem;
-    color: var(--color-texto-principal);
-    background-color: var(--color-fondo-input);
-    resize: none;
+    color: white;
+    font-size: 1.1rem;
+    padding: 12px 0;
     outline: none;
-    overflow-y: auto; 
+    resize: none;
+    line-height: 1.5;
 }
 
 .input-form button {
-    width: 50px; 
-    height: 50px;
-    margin-right: 5px;
-    background-color: var(--color-marca-send-button);
+    background: #4285f4;
     color: white;
     border: none;
-    border-radius: 50%; 
-    font-size: 1.5rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
     cursor: pointer;
-    transition: background-color 0.3s;
-    flex-shrink: 0; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
 }
 
-/*
-====================================
-6. COMPONENTE CHAT FOOTER
+.input-form button:hover:not(:disabled) {
+    background: #1a73e8;
+}
+
+/* ====================================
+7. FOOTER (ADVERTENCIA Y VERSIÓN)
 ====================================
 */
 .footer-ia {
-    position: fixed; 
-    bottom: 0; 
+    position: fixed;
+    bottom: 0;
     left: 0;
     right: 0;
-    text-align: center;
-    font-size: 0.8rem;
-    color: var(--color-texto-secundario);
-    padding: 5px;
+    padding: 15px 0;
     background-color: var(--color-fondo-base);
-    width: 100%;
-    height: 35px; 
-    z-index: 100; 
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    z-index: 90;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-disclaimer {
+    font-size: 0.75rem;
+    color: var(--color-texto-secundario);
+    margin: 0 0 4px 0;
+}
+
+.footer-copyright {
+    font-size: 0.7rem;
+    color: #555;
+    margin: 0;
+}
+
+/* ====================================
+8. ANIMACIONES
+====================================
+*/
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
