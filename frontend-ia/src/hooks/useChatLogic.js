@@ -1,30 +1,23 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
-// Conexion con la URL del backend
-const API_URL = 'http://localhost:8000/generate';
+// URL base configurada según tu archivo main.py y router v1
+const API_URL = 'http://localhost:8000/v1/generate';
 
-/**
- * Hook para manejar toda la lógica de la conversación del chat.
- */
 export const useChatLogic = () => {
   const [prompt, setPrompt] = useState('');
   const [conversacion, setConversacion] = useState([]);
   const [cargando, setCargando] = useState(false);
 
-  // Lógica de scroll
   const chatEndRef = useRef(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [conversacion]);
-  
-  // ----------------------------------------------------
-  // Función central: Manejo del envío y la comunicación con la API
-  // ----------------------------------------------------
+  }, [conversacion, scrollToBottom]);
+
   const manejarEnvio = async (e) => {
     e.preventDefault();
     const preguntaUsuario = prompt.trim();
@@ -34,55 +27,71 @@ export const useChatLogic = () => {
     setCargando(true);
     setPrompt('');
 
-    // Agregamos el mensaje del usuario
-    const nuevoMensajeUsuario = { texto: preguntaUsuario, tipo: 'usuario' };
-    setConversacion(prev => [...prev, nuevoMensajeUsuario]);
+    // 1. Agregamos el mensaje del usuario al historial
+    setConversacion(prev => [...prev, { texto: preguntaUsuario, tipo: 'usuario' }]);
 
-    // Mensaje de carga
-    const mensajeCarga = { texto: 'Generando respuesta...', tipo: 'ia', id: 'cargando' };
-    setConversacion(prev => [...prev, mensajeCarga]);
+    // 2. Mensaje temporal con ID único para ser reemplazado luego
+    const ID_CARGA = 'cargando-' + Date.now();
+    setConversacion(prev => [...prev, { 
+      texto: 'Analizando perfil técnico...', 
+      tipo: 'ia', 
+      id: ID_CARGA,
+      estaCargando: true 
+    }]);
 
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: preguntaUsuario }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`Error en el servidor: ${response.status}`);
+        // Capturamos el error estructurado de FastAPI (raise HTTPException)
+        throw new Error(data.detail || `Error ${response.status}`);
       }
 
-      const data = await response.json();
-      const respuestaIA = data.respuesta_generada;
+      /**
+       * 3. PARSEO DEL CONTENIDO ESTRUCTURADO
+       * Tu backend envía 'respuesta_generada' como string debido a json.dumps()
+       */
+      const analisisRaw = JSON.parse(data.respuesta_generada);
 
-      const nuevoMensajeIA = { texto: respuestaIA, tipo: 'ia' };
+      const respuestaIA = {
+        tipo: 'ia',
+        esEstructurado: true,
+        // Aseguramos que los campos coincidan con tu SoftwareDevAnalysis de Pydantic
+        analisis: {
+          rol: analisisRaw.rol_sugerido,
+          habilidades: analisisRaw.habilidades_clave,
+          justificacion: analisisRaw.justificacion_rol
+        }
+      };
 
-      // Reemplazamos el mensaje de carga con la respuesta
+      // 4. Reemplazo atómico del mensaje de carga por la respuesta real
       setConversacion(prev =>
-        prev.map(msg => (msg.id === 'cargando' ? nuevoMensajeIA : msg))
+        prev.map(msg => (msg.id === ID_CARGA ? respuestaIA : msg))
       );
 
     } catch (error) {
-      console.error('Hubo un problema con la operación fetch:', error);
+      console.error('Error en el asistente:', error);
+      
       const mensajeError = {
-        texto: `Error: ${error.message}. Asegúrate de que el Backend está corriendo y CORS está configurado.`,
-        tipo: 'ia'
+        tipo: 'ia',
+        esEstructurado: false,
+        texto: `⚠️ ${error.message}`
       };
 
-      // 4. Reemplazamos el mensaje de carga con el error
       setConversacion(prev =>
-        prev.map(msg => (msg.id === 'cargando' ? mensajeError : msg))
+        prev.map(msg => (msg.id === ID_CARGA ? mensajeError : msg))
       );
-
     } finally {
       setCargando(false);
     }
   };
 
-  // El hook expone solo las variables y funciones que necesita el componente App
   return {
     prompt,
     setPrompt,
