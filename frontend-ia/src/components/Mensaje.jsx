@@ -1,16 +1,20 @@
 import React from 'react';
-// 1. Importamos el Resaltador de Sintaxis
+// Importamos el Resaltador de Sintaxis
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-// 2. Importamos un tema oscuro, por ejemplo, vs-dark (popular en VS Code)
-import { vsDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-// 3. Importamos el componente de Markdown para la explicación
+
+// ✅ CORRECCIÓN 1: Importar *todos* los estilos de Prism como un objeto 'styles'
+import * as styles from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+// Importación de ReactMarkdown sin llaves (exportación por defecto)
 import ReactMarkdown from 'react-markdown';
 
 
-// Nota: El hook ahora envía 'solucion' en lugar de 'analisis'.
-// También estamos utilizando la clase 'solucion' para evitar conflictos.
+// El componente recibe 'msg' como prop
 const Mensaje = ({ msg }) => {
-    // ✅ CAMBIO CLAVE: Extraemos 'solucion' en lugar de 'analisis'
+    // Desestructuramos las propiedades del objeto msg
+    // Asegúrate de que 'msg' siempre sea pasado y no sea null/undefined
+    if (!msg) return null;
+
     const { tipo, texto, esEstructurado, solucion, estaCargando } = msg;
 
     const renderContenidoIA = () => {
@@ -18,6 +22,7 @@ const Mensaje = ({ msg }) => {
             /* 1. ESTADO DE CARGA */
             return (
                 <div className="typing-indicator">
+                    {/* Los estilos inline deben ser objetos JavaScript */}
                     <span style={{ backgroundColor: '#fff' }}></span>
                     <span style={{ backgroundColor: '#fff' }}></span>
                     <span style={{ backgroundColor: '#fff' }}></span>
@@ -32,7 +37,6 @@ const Mensaje = ({ msg }) => {
                     {/* ENCABEZADO: Proyecto y Tecnología */}
                     <div className="solucion-ia__header">
                         <h3 className="solucion-ia__titulo-proyecto">
-                            {/* Mostramos el lenguaje y nombre del proyecto */}
                             🛠️ {solucion.nombre} (Lenguaje: {solucion.lenguaje}{solucion.framework && `, Framework: ${solucion.framework}`})
                         </h3>
                     </div>
@@ -40,10 +44,13 @@ const Mensaje = ({ msg }) => {
                     {/* SECCIÓN 1: Explicación y Lógica */}
                     <div className="solucion-ia__seccion">
                         <h4 className="solucion-ia__subtitulo">💡 Lógica y Arquitectura</h4>
-                        {/* Usamos Markdown para formatear negritas o listas en la explicación */}
-                        <ReactMarkdown className="solucion-ia__explicacion">
-                            {solucion.explicacion}
-                        </ReactMarkdown>
+                        {/* ✅ CORRECCIÓN 2: Eliminamos la prop 'className' de ReactMarkdown */}
+                        {/* Usamos un div contenedor con la clase para estilizarlo desde afuera */}
+                        <div className="solucion-ia__explicacion">
+                            <ReactMarkdown>
+                                {solucion.explicacion || ''}
+                            </ReactMarkdown>
+                        </div>
                     </div>
 
                     {/* SECCIÓN 2: Código Fuente */}
@@ -52,8 +59,9 @@ const Mensaje = ({ msg }) => {
                         <div className="solucion-ia__codigo-wrapper">
                             {/* Usamos el Resaltador de Sintaxis */}
                             <SyntaxHighlighter
-                                language={solucion.lenguaje?.toLowerCase()} // El idioma debe ser minúsculas (ej: python, javascript)
-                                style={vsDark}
+                                // Aseguramos que el lenguaje no sea null y esté en minúsculas
+                                language={solucion.lenguaje?.toLowerCase() || 'text'}
+                                style={styles.vsDark}
                                 customStyle={{
                                     borderRadius: '8px',
                                     padding: '1em',
@@ -68,6 +76,7 @@ const Mensaje = ({ msg }) => {
                     </div>
 
                     {/* SECCIÓN 3: Estructura de Archivos y Dependencias */}
+                    {/* Verificamos si hay data antes de renderizar la sección */}
                     {(solucion.archivos?.length > 0 || solucion.dependencias?.length > 0) && (
                         <div className="solucion-ia__seccion solucion-ia__extras">
                             <h4 className="solucion-ia__subtitulo">🗂️ Requisitos</h4>
@@ -96,7 +105,6 @@ const Mensaje = ({ msg }) => {
 
 
     return (
-        // Los estilos CSS para .analisis-ia ahora deben llamarse .solucion-ia
         <div className={`mensaje mensaje--${tipo} ${estaCargando ? 'mensaje--cargando' : ''}`}>
             <div className="mensaje__avatar">
                 {tipo === 'ia' ? '🤖' : '👤'}
@@ -108,8 +116,9 @@ const Mensaje = ({ msg }) => {
                 ) : (
                     <>
                         <h2 className="mensaje__header-ia">
-                            {estaCargando ? '💻 Generando Solución...' : 'Respuesta del Arquitecto IA'}
+                            {estaCargando ? '💻 Generando Solución...' : 'Respuesta'}
                         </h2>
+                        {/* Se llama a la función renderContenidoIA */}
                         {renderContenidoIA()}
                     </>
                 )}

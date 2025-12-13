@@ -15,7 +15,7 @@ const ChatInput = ({ prompt, setPrompt, manejarEnvio, cargando }) => {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Describe tu perfil o intereses técnicos..."
+                    placeholder="Hazme una pregunta..."
                     rows="1"
                     disabled={cargando}
                 />

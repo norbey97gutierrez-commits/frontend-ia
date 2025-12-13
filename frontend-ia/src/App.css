@@ -1,7 +1,6 @@
 /* ====================================
 1. VARIABLES Y CONFIGURACIÓN BASE 
-====================================
-*/
+==================================== */
 :root {
     --color-fondo-base: #131314;
     /* Color oscuro de Gemini */
@@ -32,8 +31,7 @@ body,
 
 /* ====================================
 2. LAYOUT MAESTRO (CENTRADO DESDE LA RAÍZ)
-====================================
-*/
+==================================== */
 .chat-layout {
     display: flex;
     flex-direction: column;
@@ -44,7 +42,7 @@ body,
     position: relative;
     box-sizing: border-box;
 
-    /* ✅ CAMBIO AQUÍ: El scroll ahora está en la orilla derecha del navegador */
+    /* El scroll ahora está en la orilla derecha del navegador */
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
@@ -53,32 +51,40 @@ body,
 
 /* Estado de Bienvenida: Centrado vertical total */
 .layout--welcome {
+    /* ✅ CORRECCIÓN CLAVE: Aplica el centrado vertical en el layout principal */
     justify-content: center;
 }
 
 /* ====================================
 3. CARRIL DE CONVERSACIÓN
-====================================
-*/
+==================================== */
 .conversacion-container {
     width: 100%;
     max-width: 850px;
     /* Ancho máximo de lectura tipo Gemini */
     flex: 1;
+    /* Ocupa el espacio restante en modo CHAT */
     display: flex;
     flex-direction: column;
     padding: 20px;
     padding-bottom: 200px;
 
-    /* ✅ CAMBIO AQUÍ: Eliminamos el scroll de aquí para que no salga en medio */
+    /* 🛑 ELIMINAMOS margin-top: 15vh; para usar el centrado flexbox */
+
+    /* Eliminamos el scroll de aquí para que no salga en medio */
     overflow: visible;
     box-sizing: border-box;
 }
 
+/* ✅ NUEVA REGLA: Forzar la conversación a NO crecer en modo bienvenida, permitiendo el centrado vertical */
+.layout--welcome .conversacion-container {
+    flex: 0;
+}
+
+
 /* ====================================
 4. COMPONENTE BIENVENIDA (CENTRADO)
-====================================
-*/
+==================================== */
 .welcome-screen {
     width: 100%;
     display: flex;
@@ -104,6 +110,35 @@ body,
     max-width: 600px;
     margin-bottom: 30px;
 }
+
+/* --- Nuevos estilos de WelcomeScreen para el foco de Arquitecto --- */
+.welcome-screen__focus {
+    font-size: 1rem;
+    color: var(--color-texto-principal);
+    max-width: 600px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.welcome-screen__focus ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.welcome-screen__focus li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 25px;
+}
+
+.welcome-screen__focus li::before {
+    content: '✅';
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+/* --- Fin de Nuevos estilos de WelcomeScreen --- */
 
 .suggestions-list {
     list-style: none;
@@ -134,8 +169,7 @@ body,
 
 /* ====================================
 5. MENSAJES (ESTILO LIMPIO SIN TARJETAS)
-====================================
-*/
+==================================== */
 .mensaje {
     width: 100%;
     display: flex;
@@ -183,8 +217,7 @@ body,
 
 /* ====================================
 5.1. ESTILOS DE SOLUCIÓN DE CÓDIGO (NUEVA IA)
-====================================
-*/
+==================================== */
 .solucion-ia {
     display: flex;
     flex-direction: column;
@@ -251,8 +284,7 @@ body,
 
 /* ====================================
 6. INPUT CHAT (FLOTANTE Y CENTRADO)
-====================================
-*/
+==================================== */
 .input-wrapper {
     position: fixed;
     bottom: 65px;
@@ -310,8 +342,7 @@ body,
 
 /* ====================================
 7. FOOTER (ADVERTENCIA Y VERSIÓN)
-====================================
-*/
+==================================== */
 .footer-ia {
     position: fixed;
     bottom: 0;
@@ -338,8 +369,7 @@ body,
 
 /* ====================================
 8. ANIMACIONES
-====================================
-*/
+==================================== */
 @keyframes fadeIn {
     from {
         opacity: 0;

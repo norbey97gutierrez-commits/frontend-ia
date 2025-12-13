@@ -1,14 +1,14 @@
 import React from 'react';
 
-const WelcomeScreen = () => (
+const WelcomeScreen = ({ seleccionarSugerencia }) => ( // Añadimos prop opcional si tienes sugerencias
     <div className="welcome-screen">
         <div className="welcome-screen__title">
-            <h2>Asistente de desarrollo de Software</h2>
+            <h2>AI Arquitecto y desarrollador de software</h2>
         </div>
 
         <p className="welcome-screen__description">
-            Analizo tu perfil técnico para sugerirte <strong>roles ideales</strong>,
-            <strong> habilidades clave</strong> y una <strong>justificación profesional</strong> basada en arquitectura moderna.
+            Soy tu Arquitecto de Software Senior y Desarrollador Full-Stack Experto.
+            Mi misión es resolver cualquier requerimiento técnico generando...
         </p>
     </div>
 );
