@@ -1,16 +1,39 @@
-# React + Vite
+# 💻 Frontend | Asistente de Arquitecto y Desarrollador de Software
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interfaz de usuario construida con **React** y **Vite** para interactuar con el Asistente de IA. El diseño está optimizado para una experiencia de chat moderna (estilo oscuro) y para la visualización estructurada de soluciones técnicas.
 
-Currently, two official plugins are available:
+## 🚀 Tecnologías Principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **React** (Vite)
+* **JavaScript (JSX)**
+* **CSS / Variables CSS** (Diseño estilo Gemini)
+* **Librerías Clave:**
+    * `react-markdown`: Para renderizar explicaciones con formato (negritas, listas, etc.).
+    * `react-syntax-highlighter`: Para mostrar el código fuente con resaltado de sintaxis (`vsDark` style).
 
-## React Compiler
+## ✨ Características de la Interfaz
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Diseño Dark Mode:** Paleta de colores oscura, siguiendo un estilo profesional y limpio.
+* **Centrado Inteligente:** La pantalla de bienvenida se centra verticalmente en la vista para una mejor experiencia de inicio.
+* **Visualización Estructurada:** Renderiza respuestas complejas de la IA en un formato tipo tarjeta de solución de software, incluyendo:
+    * Título del proyecto y lenguaje.
+    * Explicación de la lógica (en Markdown).
+    * Bloque de código con resaltado de sintaxis.
+    * Badges para dependencias o habilidades requeridas.
+* **Gestión de Estado:** Manejo visual del estado de carga (`typing-indicator`) mientras la IA procesa la respuesta.
 
-## Expanding the ESLint configuration
+## 📁 Estructura del Proyecto
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+## ⚙️ Configuración y Ejecución
+
+1.  **Instalar dependencias:**
+    ```bash
+    npm install
+    ```
+2.  **Iniciar el servidor de desarrollo:**
+    ```bash
+    npm run dev
+    ```
+    La aplicación estará disponible en `http://localhost:5173` (o el puerto configurado por Vite).
