@@ -1,8 +1,8 @@
 import React from 'react';
-// Importamos los componentes actualizados
+// Importamos los componentes utilizados
 import Mensaje from './components/Mensaje';
 import ChatInput from './components/ChatInput';
-import Bienvenida from './components/Bienvenida'; // O WelcomeScreen según lo hayas nombrado
+import Bienvenida from './components/Bienvenida';
 import ChatFooter from './components/ChatFooter';
 
 // Importamos el hook de lógica que ya tiene el parseo de Pydantic
@@ -31,17 +31,12 @@ function App() {
       {/* Contenedor de la Conversación */}
       <div className="conversacion-container">
         {conversacion.map((msg, index) => (
-          /* IMPORTANTE: Pasamos el objeto 'msg' completo. 
-             Esto incluye: tipo, texto, esEstructurado, analisis y estaCargando.
-          */
           <Mensaje key={msg.id || index} msg={msg} />
         ))}
-
-        {/* Referencia invisible para mantener el scroll al final automáticamente */}
         <div ref={chatEndRef} />
       </div>
 
-      {/* 3. Área de interacción (Input) */}
+      {/* Área de interacción (Input) */}
       <ChatInput
         prompt={prompt}
         setPrompt={setPrompt}
@@ -49,7 +44,7 @@ function App() {
         cargando={cargando}
       />
 
-      {/* 4. Pie de página con identidad de marca */}
+      {/* Pie de página con identidad de marca */}
       <ChatFooter />
 
     </div>

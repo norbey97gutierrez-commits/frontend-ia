@@ -1,18 +1,16 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-// URL base configurada según tu archivo main.py y router v1
+// URL de comunicacion con el backend
 const API_URL = 'http://localhost:8000/v1/generate';
 
 export const useChatLogic = () => {
   const [prompt, setPrompt] = useState('');
-  // La conversación ahora almacenará objetos de código
   const [conversacion, setConversacion] = useState([]);
   const [cargando, setCargando] = useState(false);
 
   const chatEndRef = useRef(null);
 
   const scrollToBottom = useCallback(() => {
-    // Asegura que el scroll se realice solo si estamos en modo chat (con muchos mensajes)
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
@@ -30,13 +28,13 @@ export const useChatLogic = () => {
     setCargando(true);
     setPrompt('');
 
-    // 1. Agregar el mensaje del usuario
+    // Agreganos el mensaje del usuario
     setConversacion(prev => [...prev, { texto: preguntaUsuario, tipo: 'usuario' }]);
 
-    // 2. Mensaje temporal de carga
+    // Mensaje temporal de carga
     const ID_CARGA = 'cargando-' + Date.now();
     setConversacion(prev => [...prev, { 
-      texto: 'Generando solución de software...', // Nuevo mensaje de carga
+      texto: 'Generando solución de software...',
       tipo: 'ia', 
       id: ID_CARGA,
       estaCargando: true 
@@ -50,7 +48,7 @@ export const useChatLogic = () => {
         body: JSON.stringify({ prompt: preguntaUsuario }), 
       });
 
-      // 'data' ahora es directamente el objeto SoftwareSolution JSON
+      // 'data' es directamente el objeto SoftwareSolution JSON
       const data = await response.json(); 
 
       if (!response.ok) {
@@ -58,13 +56,9 @@ export const useChatLogic = () => {
         throw new Error(data.detail || `Error ${response.status}: Falló la comunicación con el servidor.`);
       }
 
-      /**
-       * ✅ CORRECCIÓN CLAVE: Eliminamos el JSON.parse() doble.
-       * 'data' ya contiene el objeto SoftwareSolution completo enviado por FastAPI.
-       */
       const solucionRaw = data; 
 
-      // Creamos el objeto de respuesta de la IA con la nueva estructura
+      // Creamos el objeto de respuesta de la IA
       const respuestaIA = {
         tipo: 'ia',
         esEstructurado: true,
@@ -74,12 +68,12 @@ export const useChatLogic = () => {
           framework: solucionRaw.framework,
           codigo: solucionRaw.codigo_principal,
           explicacion: solucionRaw.explicacion_tecnica,
-          dependencias: solucionRaw.dependencias || [], // Usar array vacío si no existe
+          dependencias: solucionRaw.dependencias || [],
           archivos: solucionRaw.estructura_archivos || [],
         }
       };
 
-      // 4. Reemplazo atómico del mensaje de carga por la respuesta real
+      // Reemplazomos el mensaje de carga por la respuesta real
       setConversacion(prev =>
         prev.map(msg => (msg.id === ID_CARGA ? respuestaIA : msg))
       );
@@ -93,7 +87,7 @@ export const useChatLogic = () => {
         texto: `⚠️ Error: ${error.message}`
       };
 
-      // Reemplaza el mensaje de carga con el error
+      // Reemplazamos el mensaje de carga con el error
       setConversacion(prev =>
         prev.map(msg => (msg.id === ID_CARGA ? mensajeError : msg))
       );
@@ -102,9 +96,7 @@ export const useChatLogic = () => {
     }
   };
 
-  // Función para manejar las sugerencias (opcional, pero útil para la UI de Gemini)
   const seleccionarSugerencia = (sugerenciaTexto) => {
-    // Al seleccionar una sugerencia (chip), lo establece como el prompt 
     setPrompt(sugerenciaTexto);
   };
 

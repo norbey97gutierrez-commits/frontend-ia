@@ -6,7 +6,6 @@ const ChatFooter = () => {
     return (
         <footer className="footer-ia">
             <div className="footer-ia__content">
-                {/* Mensaje movido desde el Input */}
                 <p className="footer-disclaimer">
                     El asistente de IA puede cometer errores. Verifica la información técnica.
                 </p>

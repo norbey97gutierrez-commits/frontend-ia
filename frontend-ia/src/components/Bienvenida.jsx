@@ -1,6 +1,6 @@
 import React from 'react';
 
-const WelcomeScreen = ({ seleccionarSugerencia }) => ( // Añadimos prop opcional si tienes sugerencias
+const WelcomeScreen = ({ seleccionarSugerencia }) => (
     <div className="welcome-screen">
         <div className="welcome-screen__title">
             <h2>AI Arquitecto y desarrollador de software</h2>
