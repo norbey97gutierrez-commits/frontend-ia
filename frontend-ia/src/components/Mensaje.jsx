@@ -35,7 +35,7 @@ const Mensaje = ({ msg }) => {
 
                     {/* Explicación y Lógica */}
                     <div className="solucion-ia__seccion">
-                        <h4 className="solucion-ia__subtitulo">💡 Lógica y Arquitectura</h4>
+                        <h4 className="solucion-ia__subtitulo">Lógica y Arquitectura</h4>
                         <div className="solucion-ia__explicacion">
                             <ReactMarkdown>
                                 {solucion.explicacion || ''}
@@ -45,7 +45,7 @@ const Mensaje = ({ msg }) => {
 
                     {/* Código Fuente */}
                     <div className="solucion-ia__seccion">
-                        <h4 className="solucion-ia__subtitulo">💾 Código Principal ({solucion.lenguaje})</h4>
+                        <h4 className="solucion-ia__subtitulo">Código Principal ({solucion.lenguaje})</h4>
                         <div className="solucion-ia__codigo-wrapper">
                             <SyntaxHighlighter
                                 language={solucion.lenguaje?.toLowerCase() || 'text'}
@@ -67,7 +67,7 @@ const Mensaje = ({ msg }) => {
                     {/* Verificamos si hay data antes de renderizar la sección */}
                     {(solucion.archivos?.length > 0 || solucion.dependencias?.length > 0) && (
                         <div className="solucion-ia__seccion solucion-ia__extras">
-                            <h4 className="solucion-ia__subtitulo">🗂️ Requisitos</h4>
+                            <h4 className="solucion-ia__subtitulo">Requisitos</h4>
                             {solucion.archivos?.length > 0 && (
                                 <p><strong>Archivos:</strong> {solucion.archivos.join(', ')}</p>
                             )}
@@ -104,7 +104,7 @@ const Mensaje = ({ msg }) => {
                 ) : (
                     <>
                         <h2 className="mensaje__header-ia">
-                            {estaCargando ? '💻 Generando Solución...' : 'Respuesta'}
+                            {estaCargando ? 'Generando Solución...' : 'Respuesta'}
                         </h2>
                         {renderContenidoIA()}
                     </>
