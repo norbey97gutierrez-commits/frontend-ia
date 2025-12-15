@@ -24,24 +24,24 @@ Interfaz de usuario construida con **React** y **Vite** para interactuar con el 
 
 ## 📁 Estructura del Proyecto
 
-├── 📁 src/
-│   ├── 📁 assets/
-│   │   └── (Imágenes, íconos o recursos estáticos)
-│   ├── 📁 components/
-│   │   ├── 🧩 Bienvenida.jsx      # Pantalla inicial, título y sugerencias.
-│   │   ├── 🧩 ChatFooter.jsx      # Pie de página con el disclaimer legal.
-│   │   ├── 🧩 ChatInput.jsx       # Componente flotante para la entrada de texto del usuario.
-│   │   └── 🧩 Mensaje.jsx         # Renderiza mensajes (chat, carga) y soluciones estructuradas (Markdown/Code).
-│   ├── 📁 hooks/
-│   │   └── 🎣 useChatLogic.js     # Lógica central: estado de mensajes, comunicación con la API.
-│   ├── 💅 App.css                 # Estilos globales y variables CSS (temas).
-│   ├── ⚛️ App.jsx                 # Componente raíz y control del layout (`.chat-layout`).
-│   ├── ⚙️ index.css               # Estilos base y reseteo del navegador.
-│   └── 🚀 main.jsx               # Punto de entrada de la aplicación (Renderizado de React).
-├── 📦 node_modules/              # Dependencias de npm.
-├── 📄 package.json               # Lista de dependencias del proyecto.
-├── 🔧 vite.config.js             # Configuración del servidor de desarrollo.
-└── 📜 README.md                  # (Este documento)
+* **src/**
+    * assets/
+        * (Imágenes, íconos o recursos estáticos)
+    * **components/**
+        * Bienvenida.jsx: Pantalla inicial, título y sugerencias.
+        * ChatFooter.jsx: Pie de página con el disclaimer legal.
+        * ChatInput.jsx: Componente flotante para la entrada de texto.
+        * Mensaje.jsx: Renderiza mensajes y soluciones estructuradas (Markdown/Code).
+    * **hooks/**
+        * useChatLogic.js: Lógica central: estado de mensajes, comunicación con la API.
+    * App.css: Estilos globales y variables CSS.
+    * App.jsx: Componente raíz y control del layout.
+    * index.css: Estilos base y reseteo.
+    * main.jsx: Punto de entrada de la aplicación.
+* node_modules/
+* package.json
+* vite.config.js
+* README.md
 
 ## ⚙️ Configuración y Ejecución
 
