@@ -52,7 +52,7 @@ export const useChatLogic = () => {
       const data = await response.json(); 
 
       if (!response.ok) {
-        // Manejo de errores HTTP (400, 422, 500). El error 422 vendrá aquí si persiste.
+        // Manejo de errores HTTP (400, 422, 500).
         throw new Error(data.detail || `Error ${response.status}: Falló la comunicación con el servidor.`);
       }
 
@@ -63,13 +63,14 @@ export const useChatLogic = () => {
         tipo: 'ia',
         esEstructurado: true,
         solucion: {
-          nombre: solucionRaw.proyecto_nombre,
+          // Mapeamos a las claves finales del modelo Pydantic
+          nombre: solucionRaw.nombre,
           lenguaje: solucionRaw.lenguaje,
           framework: solucionRaw.framework,
-          codigo: solucionRaw.codigo_principal,
-          explicacion: solucionRaw.explicacion_tecnica,
+          codigo: solucionRaw.codigo,
+          explicacion: solucionRaw.explicacion,
           dependencias: solucionRaw.dependencias || [],
-          archivos: solucionRaw.estructura_archivos || [],
+          archivos: solucionRaw.archivos || [],
         }
       };
 

@@ -1,11 +1,9 @@
 import React from 'react';
-// Importamos los componentes utilizados
 import Mensaje from './components/Mensaje';
 import ChatInput from './components/ChatInput';
 import Bienvenida from './components/Bienvenida';
 import ChatFooter from './components/ChatFooter';
 
-// Importamos el hook de lógica que ya tiene el parseo de Pydantic
 import { useChatLogic } from './hooks/useChatLogic';
 import './App.css';
 

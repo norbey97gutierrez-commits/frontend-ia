@@ -1,5 +1,4 @@
 import React from 'react';
-// Importamos el Resaltador de Sintaxis
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import * as styles from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ReactMarkdown from 'react-markdown';
@@ -13,7 +12,7 @@ const Mensaje = ({ msg }) => {
 
     const renderContenidoIA = () => {
         if (estaCargando) {
-            /* 1. ESTADO DE CARGA */
+            /* ESTADO DE CARGA */
             return (
                 <div className="typing-indicator">
                     <span style={{ backgroundColor: '#fff' }}></span>
@@ -24,7 +23,13 @@ const Mensaje = ({ msg }) => {
         }
 
         if (esEstructurado && solucion) {
-            /* RENDERIZADO ESTRUCTURADO (Software Solution) */
+            /* RENDERIZADO ESTRUCTURADO */
+
+            // Función para limpiar/des-escapar la cadena de código
+            const cleanedCode = solucion.codigo
+                ? solucion.codigo.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\t/g, '\t')
+                : '';
+
             return (
                 <div className="solucion-ia">
                     <div className="solucion-ia__header">
@@ -58,7 +63,8 @@ const Mensaje = ({ msg }) => {
                                     border: '1px solid #3c4043'
                                 }}
                             >
-                                {solucion.codigo || '// No se generó código.'}
+                                {/* Usamos la variable de código limpio para el resaltador */}
+                                {cleanedCode || '// No se generó código.'}
                             </SyntaxHighlighter>
                         </div>
                     </div>
@@ -87,7 +93,7 @@ const Mensaje = ({ msg }) => {
             );
         }
 
-        /* FALLBACK: Para errores o mensajes de texto simple */
+        /* Manejo de errores o mensajes de texto simple */
         return <p className="mensaje__texto">{texto}</p>;
     };
 
